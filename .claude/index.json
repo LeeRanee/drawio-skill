@@ -1,0 +1,61 @@
+{
+  "timestamp": "2026-01-21T15:16:29+08:00",
+  "project": {
+    "name": "drawio-skill",
+    "description": "Draw.io Diagram Skill - 一个独立的 Claude Code Skill，用于从自然语言描述生成专业的 draw.io 图表文件",
+    "type": "claude-code-skill"
+  },
+  "statistics": {
+    "totalFiles": 4,
+    "scannedFiles": 4,
+    "coveragePercent": 100,
+    "truncated": false
+  },
+  "languages": {
+    "markdown": {
+      "files": 1,
+      "percentage": 25
+    },
+    "xml": {
+      "files": 1,
+      "percentage": 25
+    },
+    "json": {
+      "files": 1,
+      "percentage": 25
+    },
+    "config": {
+      "files": 1,
+      "percentage": 25
+    }
+  },
+  "modules": [
+    {
+      "name": "drawio-diagram",
+      "path": ".claude/skills/drawio-diagram",
+      "description": "核心 Skill 定义，从自然语言生成 draw.io 图表",
+      "entryFile": "skill.md",
+      "hasTests": false,
+      "hasConfig": false,
+      "coverage": {
+        "entry": true,
+        "interfaces": true,
+        "dependencies": true,
+        "dataModels": true,
+        "tests": false
+      },
+      "relatedFiles": [
+        ".claude/skills/drawio-diagram/skill.md",
+        "drawio/user-login-flow.drawio"
+      ]
+    }
+  ],
+  "rootDocumentation": "CLAUDE.md",
+  "ignoredPatterns": [
+    ".ace-tool/",
+    ".claude/settings.local.json",
+    ".git/**"
+  ],
+  "gaps": [],
+  "nextSteps": []
+}
