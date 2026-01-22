@@ -858,6 +858,28 @@ After generating XML, verify:
 | Layout broken | Nested mxCell | Ensure all mxCell are siblings |
 | Icons not showing | Wrong shape path | Verify shape library syntax |
 
+### Automated Validation (Optional)
+
+The project includes optional validation and repair tools in the `tools/` directory:
+
+**Validation Command:**
+```bash
+npm run validate -- ./drawio/my-diagram.drawio
+```
+
+**Auto-Repair Command:**
+```bash
+npm run repair -- ./drawio/my-diagram.drawio
+```
+
+**Features:**
+- 10+ XML validation rules (wrapper structure, ID uniqueness, reference validity)
+- 20+ automatic fixes (character escaping, missing elements, tag repair)
+- Backup creation before repair
+- Detailed error reporting
+
+For programmatic usage and detailed documentation, see `tools/README.md`.
+
 ---
 
 ## Usage Guide

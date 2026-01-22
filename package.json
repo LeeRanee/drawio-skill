@@ -1,0 +1,38 @@
+{
+  "name": "drawio-skill",
+  "version": "1.0.0",
+  "description": "Claude Code Skill for generating draw.io diagrams with optional validation and operation tools",
+  "type": "module",
+  "main": "tools/dist/index.js",
+  "types": "tools/dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "validate": "tsx scripts/validate.ts",
+    "repair": "tsx scripts/repair.ts"
+  },
+  "keywords": [
+    "drawio",
+    "diagram",
+    "claude-skill",
+    "xml-validation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0"
+  },
+  "dependencies": {
+    "linkedom": "^0.16.0",
+    "zod": "^3.22.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

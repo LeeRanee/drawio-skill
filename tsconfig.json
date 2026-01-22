@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022"],
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./tools/dist",
+    "baseUrl": ".",
+    "paths": {
+      "@tools/*": ["./tools/src/*"]
+    }
+  },
+  "include": [
+    "tools/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "tools/dist",
+    "**/*.test.ts"
+  ]
+}

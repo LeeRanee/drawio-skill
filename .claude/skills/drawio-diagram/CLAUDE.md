@@ -46,7 +46,19 @@
 
 ## 关键依赖与配置
 
-**无外部依赖** - 纯 Skill 定义，不依赖 MCP 或其他服务。
+**核心模块** - 纯 Skill 定义，不依赖 MCP 或其他服务。
+
+**可选增强工具** - 位于 `../../../tools/` 目录，提供：
+- XML 验证（10+ 种规则）
+- 自动修复（20+ 种修复能力）
+- CRUD 操作（添加、更新、删除单元格）
+- 历史版本管理
+
+使用方法：
+```bash
+npm run validate -- ./drawio/diagram.drawio  # 验证图表
+npm run repair -- ./drawio/diagram.drawio    # 自动修复
+```
 
 **输出目录配置：**
 - 默认: `./drawio/`
@@ -116,6 +128,8 @@ A: 在请求中说明，如 "save to /docs/diagrams/my-flow.drawio"
 |------|------|
 | `skill.md` | Skill 核心定义（924 行） |
 | `../../drawio/user-login-flow.drawio` | 示例输出文件 |
+| `../../../tools/` | 可选增强工具（验证、修复、操作） |
+| `../../../tools/README.md` | 工具详细文档 |
 
 ---
 
@@ -123,4 +137,5 @@ A: 在请求中说明，如 "save to /docs/diagrams/my-flow.drawio"
 
 | 日期 | 版本 | 变更内容 |
 |------|------|----------|
+| 2026-01-22 | 1.1.0 | 新增可选增强工具引用（XML 验证、自动修复） |
 | 2026-01-21 | 1.0.0 | 初始化模块文档 |
