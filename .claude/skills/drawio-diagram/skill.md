@@ -1,14 +1,18 @@
 # Draw.io Diagram Generator
 
-Generate professional draw.io diagrams from natural language descriptions. Creates valid `.drawio` files that can be opened directly in diagrams.net or draw.io desktop.
+Generate, modify, validate, and repair draw.io diagrams from natural language descriptions. Creates valid `.drawio` files that can be opened directly in diagrams.net or draw.io desktop.
 
 ---
 
 ## Metadata
 
 - **Name**: drawio-diagram
-- **Description**: Generate draw.io diagrams from natural language descriptions
-- **Triggers**: `/drawio-diagram`, "create a diagram", "draw a flowchart", "generate architecture diagram"
+- **Description**: Generate, modify, validate, and repair draw.io diagrams from natural language
+- **Triggers**:
+  - **Generate**: `/drawio-diagram`, "create a diagram", "draw a flowchart", "generate architecture diagram", "画一个流程图", "生成架构图", "创建图表"
+  - **Modify**: "modify the diagram", "update the flowchart", "add a node to", "在图表中添加", "修改图表", "更新流程图"
+  - **Validate**: "validate the diagram", "check the drawio file", "验证图表", "检查drawio文件"
+  - **Repair**: "repair the diagram", "fix the drawio file", "修复图表", "修复drawio文件"
 - **Output**: `.drawio` XML files
 
 ---
@@ -17,7 +21,10 @@ Generate professional draw.io diagrams from natural language descriptions. Creat
 
 You are an expert diagram creation assistant specializing in draw.io XML generation. Your capabilities include:
 
-- Creating flowcharts, architecture diagrams, sequence diagrams, ER diagrams, and mind maps
+- **Creating** flowcharts, architecture diagrams, sequence diagrams, ER diagrams, and mind maps
+- **Modifying** existing diagrams by adding, updating, or removing elements
+- **Validating** diagram XML structure for correctness
+- **Repairing** common XML issues automatically
 - Generating valid mxGraphModel XML that renders correctly in draw.io
 - Applying professional layouts with proper spacing and alignment
 - Supporting cloud architecture icons (AWS, GCP, Azure, Kubernetes)
@@ -49,6 +56,116 @@ Before writing the file:
 4. Generate meaningful filename from diagram content
 5. Write the complete `.drawio` XML file
 6. Report the full path to user
+
+---
+
+## Operation Workflows
+
+### Generate Workflow (Default)
+
+When user requests a new diagram:
+
+1. **Parse Request** - Identify diagram type, components, relationships
+2. **Plan Layout** - Determine grid positions, avoid overlaps
+3. **Generate XML** - Create complete mxGraphModel structure
+4. **Write File** - Save to `./drawio/<name>.drawio` or specified path
+5. **Report** - Confirm file location and offer to open
+
+**Example triggers:**
+- "Create a user login flow"
+- "Draw an AWS architecture with EC2 and RDS"
+- "画一个订单处理流程图"
+
+---
+
+### Modify Workflow
+
+When user wants to modify an existing diagram:
+
+1. **Locate File** - Find the `.drawio` file (ask if path not specified)
+2. **Read Content** - Load and parse the XML structure
+3. **Understand Current State** - Identify existing nodes, edges, layout
+4. **Apply Changes** - Add/update/delete elements as requested
+5. **Preserve Structure** - Keep IDs, relationships, and styling intact
+6. **Validate** - Check XML validity before saving
+7. **Write File** - Save with changes (backup original if significant changes)
+8. **Report** - Summarize changes made
+
+**Example triggers:**
+- "Add a password reset step to the login flow"
+- "在架构图中添加一个缓存层"
+- "Update the database node label to PostgreSQL"
+- "Remove the deprecated API endpoint from the diagram"
+
+**Modification Operations:**
+
+| Operation | Description | Example |
+|-----------|-------------|---------|
+| Add Node | Insert new shape | "Add an S3 bucket" |
+| Add Edge | Connect two nodes | "Connect API Gateway to Lambda" |
+| Update Label | Change text | "Rename 'DB' to 'PostgreSQL'" |
+| Update Style | Change appearance | "Make the error path red" |
+| Delete Node | Remove shape (cascade edges) | "Remove the cache layer" |
+| Move Node | Reposition element | "Move the user node to the left" |
+
+---
+
+### Validate Workflow
+
+When user wants to validate a diagram:
+
+1. **Locate File** - Find the `.drawio` file
+2. **Read Content** - Load the XML
+3. **Run Validation** - Check against 10+ rules:
+   - Complete wrapper structure (`<mxfile>...<root>...</root>...</mxfile>`)
+   - Root cells present (`id="0"` and `id="1"`)
+   - All IDs unique and start from "2"
+   - All edges have valid source/target references
+   - All tags properly closed
+   - Special characters escaped
+   - Coordinates within bounds
+4. **Report Results** - List any issues found or confirm validity
+
+**Example triggers:**
+- "Validate the login flow diagram"
+- "Check if drawio/architecture.drawio is valid"
+- "验证这个图表文件"
+
+**CLI Alternative:**
+```bash
+npm run validate -- ./drawio/my-diagram.drawio
+```
+
+---
+
+### Repair Workflow
+
+When user wants to repair a broken diagram:
+
+1. **Locate File** - Find the `.drawio` file
+2. **Create Backup** - Save original as `.drawio.backup`
+3. **Read Content** - Load the XML
+4. **Diagnose Issues** - Identify problems (20+ detectable issues)
+5. **Apply Fixes** - Automatically repair:
+   - Escape special characters (`<>&"'`)
+   - Add missing root cells
+   - Fix unclosed tags
+   - Remove invalid references
+   - Correct malformed geometry
+6. **Validate Result** - Verify repairs succeeded
+7. **Write File** - Save repaired version
+8. **Report** - List all fixes applied
+
+**Example triggers:**
+- "Repair the broken diagram"
+- "Fix drawio/corrupted-file.drawio"
+- "修复这个图表文件"
+- "The diagram won't open, can you fix it?"
+
+**CLI Alternative:**
+```bash
+npm run repair -- ./drawio/my-diagram.drawio
+```
 
 ---
 
@@ -888,24 +1005,47 @@ For programmatic usage and detailed documentation, see `tools/README.md`.
 
 **Trigger the skill:**
 - Use `/drawio-diagram` command
-- Or describe your diagram need: "Create a flowchart for..."
+- Or describe your need naturally in English or Chinese
 
-**Example prompts:**
+### Example Prompts by Operation
 
-1. **Simple flowchart:**
-   > "Create a user login flow with input validation and error handling"
+#### Generate (创建)
 
-2. **AWS architecture:**
-   > "Draw an AWS architecture with CloudFront, ALB, EC2, and RDS"
+```
+"Create a user login flow with input validation and error handling"
+"Draw an AWS architecture with CloudFront, ALB, EC2, and RDS"
+"Generate a sequence diagram showing API authentication flow"
+"画一个用户注册流程图"
+"生成一个微服务架构图"
+```
 
-3. **Sequence diagram:**
-   > "Generate a sequence diagram showing API authentication flow"
+#### Modify (修改)
 
-4. **ER diagram:**
-   > "Create an ER diagram for a blog system with users, posts, and comments"
+```
+"Add a password reset step to the login flow diagram"
+"在 drawio/architecture.drawio 中添加一个缓存层"
+"Update the database node label to PostgreSQL in the architecture diagram"
+"Remove the deprecated API endpoint from drawio/api-flow.drawio"
+"把用户节点移到左边"
+```
 
-5. **Mind map:**
-   > "Make a mind map about machine learning concepts"
+#### Validate (验证)
+
+```
+"Validate the login flow diagram"
+"Check if drawio/architecture.drawio is valid"
+"验证 drawio/user-flow.drawio 文件"
+"这个图表文件有没有问题？"
+```
+
+#### Repair (修复)
+
+```
+"Repair drawio/broken-diagram.drawio"
+"The diagram won't open, can you fix it?"
+"修复 drawio/corrupted.drawio"
+"图表文件打不开了，帮我修复"
+```
 
 **With custom path:**
 > "Create a flowchart for order processing, save to /docs/diagrams/order-flow.drawio"
