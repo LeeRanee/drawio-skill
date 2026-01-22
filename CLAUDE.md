@@ -12,55 +12,30 @@
 drawio-skill/
 ├── .claude/
 │   └── skills/
-│       └── drawio-diagram/     # 核心 Skill 定义
-│           └── skill.md        # Skill 规范文档
-├── tools/                      # 可选增强工具 (Optional)
-│   ├── src/                    # TypeScript 源码
-│   │   ├── xml-validation.ts   # XML 验证与自动修复
-│   │   ├── diagram-operations.ts # 图表 CRUD 操作
-│   │   ├── history.ts          # 历史版本管理
-│   │   └── index.ts            # 公共 API 入口
-│   ├── dist/                   # 编译输出
-│   └── README.md               # 工具使用文档
-├── scripts/                    # CLI 脚本
-│   ├── validate.ts             # 验证 .drawio 文件
-│   └── repair.ts               # 自动修复 .drawio 文件
-├── drawio/                     # 生成的图表默认输出目录
-│   └── user-login-flow.drawio  # 示例图表
-├── package.json                # npm 依赖配置
-├── tsconfig.json               # TypeScript 配置
+│       └── drawio-diagram/           # 核心 Skill 定义
+│           ├── SKILL.md              # Skill 规范文档 (必需)
+│           ├── scripts/              # 脚本工具
+│           │   ├── validate.ts       # 验证 .drawio 文件
+│           │   ├── repair.ts         # 自动修复 .drawio 文件
+│           │   ├── xml-validation.ts # XML 验证核心
+│           │   ├── diagram-operations.ts # 图表 CRUD 操作
+│           │   └── history.ts        # 历史版本管理
+│           └── references/           # 参考文档
+│               ├── templates.md      # 图表模板库
+│               ├── cloud-icons.md    # 云服务图标参考
+│               └── style-guide.md    # 样式参考
+├── drawio/                           # 生成的图表默认输出目录
+│   └── user-login-flow.drawio        # 示例图表
+├── package.json                      # npm 依赖配置
+├── tsconfig.json                     # TypeScript 配置
 └── .gitignore
 ```
 
 **技术栈：**
-- Skill 定义格式: Markdown
+- Skill 定义格式: Markdown (YAML frontmatter)
 - 输出格式: draw.io XML (mxGraphModel)
 - 运行环境: Claude Code CLI
-- 可选工具: TypeScript + linkedom + zod
-
----
-
-## 模块结构图
-
-```mermaid
-graph TD
-    A["(根) drawio-skill"] --> B[".claude/skills"];
-    B --> C["drawio-diagram"];
-    A --> D["drawio"];
-    A --> E["tools (可选)"];
-
-    click C "./.claude/skills/drawio-diagram/CLAUDE.md" "查看 drawio-diagram 模块文档"
-    click E "./tools/README.md" "查看工具文档"
-```
-
----
-
-## 模块索引
-
-| 模块 | 路径 | 职责 |
-|------|------|------|
-| drawio-diagram | `.claude/skills/drawio-diagram/` | 核心 Skill，定义图表生成规则与模板 |
-| tools | `tools/` | 可选增强工具：XML 验证、自动修复、CRUD 操作 |
+- 脚本工具: TypeScript + linkedom + zod
 
 ---
 
@@ -155,9 +130,22 @@ graph TD
 
 ---
 
-## 可选增强工具 (Optional Tools)
+## 脚本工具
 
-项目提供了一套可选的验证和操作工具，用于确保生成的 `.drawio` 文件质量：
+Skill 内置验证和修复脚本，位于 `.claude/skills/drawio-diagram/scripts/`：
+
+### CLI 使用
+
+```bash
+# 安装依赖
+npm install
+
+# 验证图表文件
+npx ts-node .claude/skills/drawio-diagram/scripts/validate.ts ./drawio/my-diagram.drawio
+
+# 自动修复图表文件
+npx ts-node .claude/skills/drawio-diagram/scripts/repair.ts ./drawio/my-diagram.drawio
+```
 
 ### 功能特性
 
@@ -173,50 +161,12 @@ graph TD
 - 保存最近 20 个版本
 - 自动去重优化存储
 
-### CLI 使用
-
-```bash
-# 安装依赖
-npm install
-
-# 构建工具
-npm run build
-
-# 验证图表文件
-npm run validate -- ./drawio/my-diagram.drawio
-
-# 自动修复图表文件
-npm run repair -- ./drawio/my-diagram.drawio
-```
-
-### 编程式使用
-
-```typescript
-import { validateDrawioXML, repairDrawioXML } from './tools/dist/index.js';
-
-const xml = await fs.readFile('./drawio/diagram.drawio', 'utf-8');
-
-// 验证
-const result = validateDrawioXML(xml);
-if (!result.valid) {
-  console.error('Validation error:', result.error);
-}
-
-// 修复
-const repair = repairDrawioXML(xml);
-if (repair.repaired && repair.repairedXML) {
-  await fs.writeFile('./drawio/diagram.drawio', repair.repairedXML);
-  console.log('Fixed issues:', repair.fixedIssues);
-}
-```
-
-详细文档：[tools/README.md](./tools/README.md)
-
 ---
 
 ## 变更记录 (Changelog)
 
 | 日期 | 版本 | 变更内容 |
 |------|------|----------|
+| 2026-01-22 | 2.0.0 | 重构为符合 Skill 规范的目录结构：SKILL.md + scripts/ + references/ |
 | 2026-01-22 | 1.1.0 | 新增可选增强工具：XML 验证、自动修复、CRUD 操作、历史管理 |
 | 2026-01-21 | 1.0.0 | 初始化项目文档 |
